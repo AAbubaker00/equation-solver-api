@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+
 def format_equation(equation):
     equation = equation.replace('(', '{').replace(')', '}')
     equation = equation.replace("\\\\", "`")
@@ -13,9 +14,10 @@ def math_solve(expression):
     equation = format_equation(equation=expression)
     # print(equation)
 
-    url = 'https://mathsolver.microsoft.com/en/solve-problem/{}'.format(equation)
-    print(url)
-    
+    url = 'https://mathsolver.microsoft.com/en/solve-problem/{}'.format(
+        equation)
+    # print(url)
+
     from app import driver
     driver.get(url)
 
@@ -34,6 +36,22 @@ def math_solve(expression):
 
         final_json = json_data['props']['pageProps']['response']['mathSolverResult']
 
-        return jsonify(final_json)
+        action_list = []
+
+        for action in final_json['actions']:
+            action_dict = {
+                "actionName": action.get("actionName", ""),
+                "solution": action.get("solution", ""),
+                'steps': action.get('templateSteps')
+            }
+            # Append the extracted data to the list
+            action_list.append(action_dict)
+
+        return jsonify({
+            'standardFormat': final_json['problem'],
+            'problemCategory':  final_json['problemCategory'],
+            'solutions': action_list,
+        })
+        
     except Exception as error:
         return jsonify({'error': '{}'.format(error)})

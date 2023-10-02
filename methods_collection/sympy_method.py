@@ -9,8 +9,6 @@ def custom_latex(expr):
     return latex_str
 
 
-latextformat_inputed = r'\\left[\\begin{array}{lll}1 & 2 & 1 \\\\ 1 & 4 & 1 \\\\ 2 & 2 & 1\\end{array}\\right]\\left[\\begin{array}{lll}5 & 2 & 1 \\\\ 1 & 1 & 3 \\\\ 0 & 2 & 1\\end{array}\\right]'
-
 def sympy_solve(expression):
     latextformat = custom_latex(expr=expression)
 
@@ -40,7 +38,6 @@ def sympy_solve(expression):
                 'error': '{}'.format(error)
             })
     except Exception as error:
-
         from . import math_solver
 
-        return math_solver.math_solve(expression=latextformat_inputed)
+        return math_solver.math_solve(expression=expression)
