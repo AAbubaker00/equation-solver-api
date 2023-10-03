@@ -35,6 +35,7 @@ def sympy_solve(expression):
             })
         except Exception as error:
             return jsonify({
+                'location': 'Method 1',
                 'error': '{}'.format(error)
             })
     except Exception as error:

@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-
+from selenium import webdriver
 
 def format_equation(equation):
     equation = equation.replace('(', '{').replace(')', '}')
@@ -14,11 +14,17 @@ def math_solve(expression):
     equation = format_equation(equation=expression)
     # print(equation)
 
-    url = 'https://mathsolver.microsoft.com/en/solve-problem/{}'.format(
-        equation)
+    url = 'https://mathsolver.microsoft.com/en/solve-problem/{}'.format(equation)
     # print(url)
 
-    from app import driver
+
+    # # Create ChromeOptions object for headless mode
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--headless")  # Run Chrome in headless mode
+
+    # Create a webdriver with the specified options
+    driver = webdriver.Chrome(options=chrome_options)
+
     driver.get(url)
 
     try:
@@ -31,8 +37,7 @@ def math_solve(expression):
 
         from flask import jsonify
         import json
-
-        json_data = json.loads(script_tag.string)
+        json_data =  json.loads(script_tag.string)
 
         final_json = json_data['props']['pageProps']['response']['mathSolverResult']
 
@@ -52,6 +57,10 @@ def math_solve(expression):
             'problemCategory':  final_json['problemCategory'],
             'solutions': action_list,
         })
-        
+
     except Exception as error:
-        return jsonify({'error': '{}'.format(error)})
+        return jsonify({
+            'location': 'Method 2',
+            'error': '{}'.format(error)})
+    finally: 
+        driver.quit()

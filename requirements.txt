@@ -1,5 +1,6 @@
 flask
-flask-restful
 latex2sympy2
 sympy
 mpmath
+selenium
+bs4
